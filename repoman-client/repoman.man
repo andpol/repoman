@@ -31,12 +31,12 @@ Override the port setting for the host with \fIPORT\fP.
 Override the default proxy certificate with \fIPROXY\fP.
 .SH SUBCOMMANDS
 \fBNote:\fP All of the subcommands, in addition the arguments listed below, have the optional [\fB-h | --help\fP] argument that shows the subcommand help dialog.
-.SS Basic
+.SS Basic Subcommands
 .TP
-\fBget\fP [-d \fIPATH\fP] [\fIUSER/\fP]\fIIMAGE\fP
+\fBget\fP [{-d|--dest} \fIPATH\fP] [\fIUSER/\fP]\fIIMAGE\fP
 Download an image from the repository to current directory or \fIPATH\fP, if specified.
 
-\fB-d\fP \fIPATH\fP \- The destination of the downloaded image.
+\fB{-d|--dest}\fP \fIPATH\fP \- The destination of the downloaded image.
 
 \fIUSER\fP \- The image's owner.
 
@@ -66,7 +66,7 @@ Rename the name of an image from \fIOLD\fP to \fINEW\fP.
 \fBdelete\fP [-f|--force] [\fIUSER/\fP]\fIIMAGE\fP
 Delete the specified image from the repository.
 
-\fB-f|--force\fP \- Delete image without prompting.
+\fB-f|--force\fP \- Delete image without confirmation.
 
 \fIUSER\fP \- The image's owner.
 
@@ -103,86 +103,241 @@ Examples:
 .TP
 \fBmake-config\fP
 Generate a default repoman configuration file.
-.SS Advanced
+.SS Advanced Subcommands
 .TP
-\fBlist-users\fP
+\fBlist-users\fP [-l|--long] [{-g|--group} \fIGROUP\fP]
 List the user accounts on repoman.
+
+\fB-l | --long\fP \- Display extra information.
+
+\fB{-g|--group}\fP \fIGROUP\fP \- Only display users the belong to the group \fIGROUP\fP
+
 .TP
-\fBlist-groups\fP
+\fBlist-groups\fP [-l|--long] [-a|--all] [{-u|--user} \fIUSER\fP]
 List existing user groups on the repository.
+
+\fB-l | --long\fP \- Display extra information.
+
+\fB-a | -all\fP \-Display all groups
+
+\fB{-u|--user}\fP \fIUSER\fP \- Display group membership for the user \fIUSER\fP.
+
 .TP
-\fBlist-images\fP
-List a user's images stored in the repository.
+\fBlist-images\fP [-a|--all] [-l|--long] [--sharedwith] [{-u|--user} \fIUSER\fP | {-g|--group} \fIGROUP\fP]
+List a user's images stored in the repository. See \fBlist\fP subcommand.
+
 .TP
-\fBdescribe-user\fP
+\fBdescribe-user\fP [-l|--long] \fIUSER\fP
 Display information about an existing user.
+
+\fB-l | --long\fP \- Display extra information.
+
+\fIUSER\fP \- The user to describe.
+
 .TP
-\fBdescribe-group\fP
+\fBdescribe-group\fP [-l|--long] \fIGROUP\fP
 Display information about an existing group.
+
+\fB-l | --long\fP \- Display extra information.
+
+\fIGROUP\fP \- The group to describe.
+
 .TP
-\fBdescribe-image\fP
+\fBdescribe-image\fP [-l|--long] \fIIMAGE\fP
 Display information about an existing image.
+
+\fB-l | --long\fP \- Display extra information.
+
+\fIIMAGE\fP \- The image to describe.
+
 .TP
-\fBcreate-user\fP
+\fBcreate-user\fP [--metadata \fIVALUE\fP [--metadata \fIVALUE\fP ...]]
 Create a new user account based on given information.
+
+\fB--metadata\fP \fIVALUE\fP \- See METADATA section for possible values.
+
 .TP
-\fBcreate-group\fP
+\fBcreate-group\fP [--metadata \fIVALUE\fP [--metadata \fIVALUE\fP ...]]
 Create a new group based on given information.
+
+\fB--metadata\fP \fIVALUE\fP \- See METADATA section for possible values.
+
 .TP
-\fBcreate-image\fP
+\fBcreate-image\fP [-f|--file \fIFILE\fP] [--metadata \fIVALUE\fP [--metadata \fIVALUE\fP ...]]
 Create a new image based on given information.
+
+\fB-f | --file\fP \fIFILE\fP \- Specify image file to upload.
+
+\fB--metadata\fP \fIVALUE\fP \- See METADATA section for possible values.
+
 .TP
-\fBmodify-user\fP
+\fBmodify-user\fP \fIUSER\fP [--metadata \fIVALUE\fP [--metadata \fIVALUE\fP ...]]
 Modify an existing user with the given information.
+
+\fIUSER\fP - The existing user you want to modify.
+
+\fB--metadata\fP \fIVALUE\fP \- See METADATA section for possible values.
+
 .TP
-\fBmodify-group\fP
+\fBmodify-group\fP \fIGROUP\fP [--metadata \fIVALUE\fP [--metadata \fIVALUE\fP ...]]
 Modify an existing group with the given information.
+
+\fIGROUP\fP - The existing group you want to modify.
+
+\fB--metadata\fP \fIVALUE\fP \- See METADATA section for possible values.
+
 .TP
-\fBmodify-image\fP
+\fBmodify-image\fP \fIIMAGE\fP [--metadata \fIVALUE\fP [--metadata \fIVALUE\fP ...]]
 Modify an existing image with the given information.
+
+\fIIMAGE\fP - The existing image you want to modify.
+
+\fB--metadata\fP \fIVALUE\fP \- See METADATA section for possible values.
+
 .TP
-\fBremove-user\fP
+\fBremove-user\fP [-f|--force] \fIUSER\fP
 Remove an existing user with the given information.
+
+\fB-f | --force\fP \- Delete user without confirmation.
+
+\fIUSER\fP \- The user to delete.
+
 .TP
-\fBremove-group\fP
+\fBremove-group\fP [-f|--force] \fIGROUP\fP
 Remove an existing group with the given information.
+
+\fB-f | --force\fP \- Delete group without confirmation.
+
+\fIGROUP\fP \- The group to delete.
+
 .TP
-\fBremove-image\fP
+\fBremove-image\fP [-f|--force] [\fIUSER/\fP]\fIIMAGE\fP
 Remove an existing image with the given information.
+
+\fB-f | --force\fP \- Delete image without confirmation.
+
+\fIUSER/\fP - The image's owner.
+
+\fIIMAGE\fP \- The image to delete.
+
 .TP
-\fBshare-image\fP
-Share an image with users or groups.
+\fBshare-image\fP {{-u|--user} \fIUSER\fP | {-g|--group} \fIGROUP\fP} \fIIMAGE\fP
+Share an image with a user or group.
+
+\fB{-u|--user}\fP \fIUSER\fP \- The user to share the image with.
+
+/fB{-g|--group}/fP \fIGROUP\fP \- The group to share the image with.
+
 .TP
-\fBunshare-image\fP
-Stop sharing an image with users of groups.
+\fBunshare-image\fP {{-u|--user} \fIUSER\fP | {-g|--group} \fIGROUP\fP} \fIIMAGE\fP
+Stop sharing an image with a user of group.
+
+\fB{-u|--user}\fP \fIUSER\fP \- The user to stop sharing the image with.
+
+/fB{-g|--group}/fP \fIGROUP\fP \- The group to stop sharing the image with.
+
 .TP
-\fBadd-users-to-group\fP
+\fBadd-users-to-group\fP {-u|--user} \fIUSER\fP [\fIUSER\fP ...] \fIGROUP\fP
 Add specified users to a group.
+
+\fB{-u|--user}\fP \fIUSER\fP [\fIUSER\fP ...] \- The user(s) to add to the group.
+
+\fIGROUP\fP \- The group to add the user(s) to.
+
 .TP
-\fBremove-users-from-group\fP
+\fBremove-users-from-group\fP {-u|--user} \fIUSER\fP [\fIUSER\fP ...] \fIGROUP\fP
 Remove specified users from a group.
+
+\fB{-u|--user}\fP \fIUSER\fP [\fIUSER\fP ...] \- The user(s) to remove from the group.
+
+\fIGROUP\fP \- The group to remove the user(s) from.
+
 .TP
-\fBadd-permissions\fP
+\fBadd-permissions\fP {-p|--permissons} \fIPERMISSION\fP [\fIPERMISSION\fP ...] \fIGROUP\fP
 Add specified permissions to a group.
+
+\fB{-p|--permissons}\fP \fIPERMISSION\fP [\fIPERMISSION\fP ...] -\ The list of permissions to add to the group. See PERMISSIONS section.
+
+\fIGROUP\fP \- The group that you are adding permissions to.
+
 .TP
-\fBremove-permissions\fP
+\fBremove-permissions\fP {-p|--permissons} \fIPERMISSION\fP [\fIPERMISSION\fP ...] \fIGROUP\fP
 Remove specified permissions to a group.
+
+\fB{-p|--permissons}\fP \fIPERMISSION\fP [\fIPERMISSION\fP ...] -\ The list of permissions to remove from the group. See PERMISSIONS section.
+
+\fIGROUP\fP \- The group that you are removing permissions from.
+
 .TP
-\fBupload-image\fP
+\fBupload-image\fP --file \fIFILE\fP \fIIMAGE\fP
 Upload an image file to the repository to a an existing repoman image slot.
+
+\fB--file\fP \fIFILE\fP \- The file to upload to the repository.
+
+\fIIMAGE\fP \- The image slot (created with \fBrepoman create-image\fP) to upload the image to.
+
 .TP
-\fBdownload-image\fP
-Download the specified image file.
+\fBdownload-image\fP [{-d|--dest} \fIPATH\fP] \fIIMAGE\fP
+Download an image from the repository to current directory or \fIPATH\fP, if specified.
+
+\fB{-d|--dest}\fP \fIPATH\fP \- The destination of the downloaded image.
+
+\fIUSER\fP \- The image's owner.
+
+\fIIMAGE\fP \- The name of the image on repoman.
+
 .TP
 \fBwhoami\fP
 Display information about the current user (ie, you)
+
 \fBabout\fP
 Display version/configuration information about this program.
-.SH SEE ALSO
-something4
-.SH NOTES
-something5
+
+.SH METADATA
+.SS User Metadata
+.TP
+\fBuser_name\fP (Required)
+The unique username of the user.
+.TP
+\fBfull_name\fP (Required)
+The full name of the user.
+.TP
+\fBemail\fP (Required)
+The email address of the user.
+.TP
+\fBcert_dn\fP (Required)
+The Distinguished Name (DN) of the the certificate which is owned by the user.
+.SS Image Metadata
+.TP
+\fBname\fP (Required)
+Image name unique to the user's namespace.
+.TP
+\fBdescription\fP (Optional)
+Description of the image.
+.TP
+\fBos_variant\fP (Optional)
+The operating system variant. Ex: redhat, centos, ubuntu, etc.
+.TP
+\fBos_arch\fP (Optional)
+The operating system architechure. x86 or x86_64
+.TP
+\fBos_type\fP (Optional)
+The operating system type. Ex: linux, unix, windows, etc.
+.TP
+\fBhypervisor\fP (Optional)
+The hypervisor. Ex: xen, kvm, etc.
+.TP
+\fBread_only\fP (Optional - defaults to false)
+Should the image only have read permissions? 'true' or 'false'
+.TP
+\fBexpires\fP (Optional - defaults to never??????)
+When should the image expire? Ex: 'somemagicaldateformat???'
+.TP
+\fBunauthenticated_access\fP (Optional - defaults to false)
+Should unauthenticated access be allowed? 'true' or 'false'
 .SH AUTHOR
-something6
+something
 .SH BUGS
-something7
+If you have any issues or ideas for improving Repoman, please use the github issue tracker to allow others to follow along with problems and ideas. The issue tracker can be found at: 
+
+https://github.com/hep-gc/repoman/issues
