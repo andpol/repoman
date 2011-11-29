@@ -1,0 +1,188 @@
+.TH REPOMAN 1 "28 November 2011"
+.SH NAME
+repoman \- a virtual image repository CLI
+.SH SYNOPSIS
+\fBrepoman\fP [-H \fIHOST\fP] [-P \fIPORT\fP] [--proxy \fIPROXY\fP] [\fISUBCOMMAND\fP] [\fIARGS\fP]
+
+\fBrepoman\fP -h | --help
+
+\fBrepoman\fP --version
+.SH DESCRIPTION
+Repoman is a virtual machine image catalog and repository with a RESTful interface.
+
+If you have any issues or ideas for improving Repoman, please use the github issue tracker to allow others to follow along with problems and ideas. The issue tracker can be found at: 
+
+https://github.com/hep-gc/repoman/issues
+.SS Options
+.TP
+\fB-h | --help\fP
+Show the help dialog. When included in \fIARGS\fP, the help dialog for the subcommand is shown.
+.TP
+\fB--version\fP
+Display the repoman version.
+.TP
+\fB-H\fP \fIHOST\fP
+Override the host setting with \fIHOST\fB.
+.TP
+\fB-P\fP \fIPORT\fP
+Override the port setting for the host with \fIPORT\fP.
+.TP
+\fB--proxy\fP \fIPROXY\fP
+Override the default proxy certificate with \fIPROXY\fP.
+.SH SUBCOMMANDS
+\fBNote:\fP All of the subcommands, in addition the arguments listed below, have the optional [\fB-h | --help\fP] argument that shows the subcommand help dialog.
+.SS Basic
+.TP
+\fBget\fP [-d \fIPATH\fP] [\fIUSER/\fP]\fIIMAGE\fP
+Download an image from the repository to current directory or \fIPATH\fP, if specified.
+
+\fB-d\fP \fIPATH\fP \- The destination of the downloaded image.
+
+\fIUSER\fP \- The image's owner.
+
+\fIIMAGE\fP \- The name of the image on repoman.
+
+.TP
+\fBsave\fP \fINAME\fP[-f|--force] [--gzip] [--resize \fISIZE\fP] [--verbose] [--clean] [--comment \fICOMMENT\fP]
+Snapshot and upload the current system to the repository.
+
+\fB-f | --force\fP \- Force uploading even if it overwrites an existing image.
+
+\fB--gzip\fP \- Upload the image compressed with gzip.
+
+\fB--resize\fP \fISIZE\fP \- Create an image with a size of \fISIZE\fP MB.
+
+\fB--verbose\fP \- Display verbose output during snapshot.
+
+\fB--clean\fP \- Remove any existing local snapshots before creating a new one.
+
+\fB--comment\fP \fICOMMENT\fP \- Add/Replace the image comment at the end of the description with \fICOMMENT\fP.
+
+.TP
+\fBrename\fP \fIOLD\fP \fINEW\fP
+Rename the name of an image from \fIOLD\fP to \fINEW\fP.
+
+.TP
+\fBdelete\fP [-f|--force] [\fIUSER/\fP]\fIIMAGE\fP
+Delete the specified image from the repository.
+
+\fB-f|--force\fP \- Delete image without prompting.
+
+\fIUSER\fP \- The image's owner.
+
+\fIIMAGE\fP \- The name of the image on repoman.
+
+.TP
+\fBlist\fP [-a|--all] [-l|--long] [--sharedwith] [{-u|--user} \fIUSER\fP | {-g|--group} \fIGROUP\fP]
+List images stored in the repository.
+
+\fB-a |-all\fP \- Display all the images.
+
+\fB-l | --long\fP \- Display extra information for each image.
+
+\fB--sharedwith\fP \- Modifier flag. See below examples.
+
+\fB{-u|--user}\fP \fIUSER\fP \- List images owned by \fIUSER\fP
+
+\fB{-g|--group}\fP \fIGROUP\fP \- List images accessible by members of the group \fIGROUP\fP
+
+Examples:
+
+    \fBrepoman list\fP
+        \- list all the current user's images
+    \fBrepoman list --sharedwith\fP
+        \- list all the images shared with the current user
+    \fBrepoman list --user bob\fP
+        \- list all images owned by the user \'bob\'
+    \fBrepoman list --sharedwith --user bob\fP
+        \- list all the images shared with the user \'bob\'
+    \fBrepoman list --group babar\fP
+        \- list all images accessible by members of the \'babar\' group
+    \fBrepoman list --sharedwith --group babar\fP
+        \- has the same effect as the previous example
+.TP
+\fBmake-config\fP
+Generate a default repoman configuration file.
+.SS Advanced
+.TP
+\fBlist-users\fP
+List the user accounts on repoman.
+.TP
+\fBlist-groups\fP
+List existing user groups on the repository.
+.TP
+\fBlist-images\fP
+List a user's images stored in the repository.
+.TP
+\fBdescribe-user\fP
+Display information about an existing user.
+.TP
+\fBdescribe-group\fP
+Display information about an existing group.
+.TP
+\fBdescribe-image\fP
+Display information about an existing image.
+.TP
+\fBcreate-user\fP
+Create a new user account based on given information.
+.TP
+\fBcreate-group\fP
+Create a new group based on given information.
+.TP
+\fBcreate-image\fP
+Create a new image based on given information.
+.TP
+\fBmodify-user\fP
+Modify an existing user with the given information.
+.TP
+\fBmodify-group\fP
+Modify an existing group with the given information.
+.TP
+\fBmodify-image\fP
+Modify an existing image with the given information.
+.TP
+\fBremove-user\fP
+Remove an existing user with the given information.
+.TP
+\fBremove-group\fP
+Remove an existing group with the given information.
+.TP
+\fBremove-image\fP
+Remove an existing image with the given information.
+.TP
+\fBshare-image\fP
+Share an image with users or groups.
+.TP
+\fBunshare-image\fP
+Stop sharing an image with users of groups.
+.TP
+\fBadd-users-to-group\fP
+Add specified users to a group.
+.TP
+\fBremove-users-from-group\fP
+Remove specified users from a group.
+.TP
+\fBadd-permissions\fP
+Add specified permissions to a group.
+.TP
+\fBremove-permissions\fP
+Remove specified permissions to a group.
+.TP
+\fBupload-image\fP
+Upload an image file to the repository to a an existing repoman image slot.
+.TP
+\fBdownload-image\fP
+Download the specified image file.
+.TP
+\fBwhoami\fP
+Display information about the current user (ie, you)
+\fBabout\fP
+Display version/configuration information about this program.
+.SH SEE ALSO
+something4
+.SH NOTES
+something5
+.SH AUTHOR
+something6
+.SH BUGS
+something7
