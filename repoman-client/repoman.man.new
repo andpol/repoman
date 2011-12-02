@@ -2,22 +2,21 @@
 .SH NAME
 repoman \- a command to interact with repoman Virtual Machine (VM) image repositories
 .SH SYNOPSIS
-\fBrepoman\fP {--help|-h}
+
+\fBrepoman\fP {--help|-h} [\fIsubcommand\fP]
+
+\fBrepoman\fP [{--host|-H} \fIhost\fP] [{--port|-p} \fIport\fP] [{--proxy|-P} \fIpath\fP] \fIsubcommand\fP
 
 \fBrepoman\fP {--version|-v}
-
-\fBrepoman\fP [{--host|-H} \fIhost\fP] [{--port|-p} \fIport\fP] [{--proxy|-P} \fIproxy\fP] \fIsubcommand\fP
 .SH DESCRIPTION
-Repoman is a virtual machine image catalog and repository with a RESTful interface.
-
-This manpage is is organized into three sections with relevant subcommands and information: IMAGE, USER, and GROUP.
+Repoman is the name given to both a user command and a server software package that provides Virtual Machine (VM) image
+repository management over the web (HTTP/HTTPS). This man page describes the command used to interact with a repoman server,
+allowing you to create, manage, and delete Virtual Machine images.
 .SS Options
 .TP
-\fB{--help|-h}\fP
-Show the general help dialog. When preceeded by subcommand, the specific subcommand help dialog is shown.
-.TP
-\fB{--version|-v}\fP
-Display the repoman version.
+\fB{--help|-h}\fP [\fIsubcommand\fP]
+Show the help dialog. If no subcommand is specified, a general overview of all the commands is displayed. Specifiying the subcommand displays
+information specific to that subcommand.
 .TP
 \fB{--host|-H}\fP \fIhost\fP
 Override the host setting with \fIhost\fB.
@@ -25,24 +24,47 @@ Override the host setting with \fIhost\fB.
 \fB{-p|--port}\fP \fIport\fP
 Override the port setting for the host with \fIport\fP.
 .TP
-\fB{-P|--proxy}\fP \fIproxy\fP
-Override the default proxy certificate with \fIproxy\fP.
+\fB{-P|--proxy}\fP \fIpath\fP
+Override the default proxy certificate with the proxy certificate located at \fIpath\fP.
 .TP
 \fIsubcommand\fP
 See the following sections for possible subcommands and subcommand parameters.
+.TP
+\fB{--version|-v}\fP
+Display the repoman version and exit.
+.SH CONFIGURATION SUBCOMMAND
+Before other repoman subcommands can be used, a configuration file must be created. The following subcommand will create the
+configuration file for you.
+.TP
+\fBmake-config\fP \fIhost\fP [{--port|-p} \fIport\fP] [{--proxy|-P} \fIpath\fP] [{--exclude|-e} \fIpaths\fP] [{--emptied|-E} \fIpaths\fP]
+.TP
+\fIhost\fP
+The fully qualified domain name (FQDN) of the repoman image repository server to be managed. For example: vmrepo.example.ca
+.TP
+{--port|-p} \fIport\fP
+Used to specify the port that the repoman server listens on. Defaults to 443, the default port for a repoman server.
+.TP
+{--proxy|-P} \fIpatpath\fP
+The location of your proxy credential to be used when communicating with the repoman server. Defaults to /tmp/x509up_uNNNN, where NNNN is your effective UID.
+.TP
+{--exclude|-e} \fIpaths\fP
+Blank seperated list of paths to be excluded from a snapshot of the operating system during a \fBrepoman snapshot\fP. Defaults to \'/lustre/* /root/.ssh\'.
+.TP
+{--emptied|-E} \fIpaths\fP
+Blank seperated list of paths to be created but not copied during a snapshot of the operating system. Defaults to \'/dev /mnt /proc /sys /tmp\'.
 .SH IMAGE MANIPULATION SUBCOMMANDS
 A VM image is a file containing a bootable copy of a configured operating system. In a repoman VM repository, an image is identified
-by the owning user and a name unique within the owner's domain (namespace). In addition to the image itself, the repoman repository maintains
-\"metadata\", or information about the image in a an image-slot within a database, for example: name, description, architechture, etc.
+by the owning user and a name unique within the owner's domain. In addition to the image itself, the repoman repository maintains
+\'metadata\', or information about the image in a an image-slot within a database, for example: name, description, architechture, etc.
 .TP
 \fBcreate-image\fP [\fIuser\fP/]\fIimage\fP [{--file|-f} \fIfile\fP] [--\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]]
-Create a new repoman image-slot based on given information. If an image file is supplied, then \fIfile\fP is uploaded
+Create a new repoman image-slot based on the given information. If an image file is supplied, then \fIfile\fP is uploaded
 to the repoman respository after the entry is created.
 
-\fIuser\fP \- The image's owner. This can be specified if the image you would create is in a different user's namespace.
+\fIuser\fP \- The image's owner. This may be omitted unless you want to create an image for a different user.
 
-\fIname\fP \- The name of the newly created image-slot on the repository. This will be used to reference the image when running
-other repoman commands. It must be unique to your user's namespace and can only contain ([a-Z][0-9][_][-]) characters.
+\fIimage\fP \- The name of the newly created image-slot on the repository. This will be used to reference the image when running
+other repoman commands. It must be unique within owner's domain and can only contain ([a-Z][0-9][_][-]) characters.
 
 \fB{--file|f}\fP \fIfile\fP \- The path to the image file that will be uploaded to the repository.
 
@@ -52,33 +74,34 @@ other repoman commands. It must be unique to your user's namespace and can only 
 \fBdescribe-image\fP [\fIuser\fP/]\fIimage\fP
 Display all information about an image.
 
-\fIuser\fP \- The image's owner. This can be specified if the image you would like to describe is in a different user's namespace.
+\fIuser\fP \- The image's owner. This may be omitted if you own the image.
 
 \fIimage\fP \- The image to describe. Use \fBrepoman list-images\fP to see possible values.
 
 .TP
 \fB{download-image|get}\fP [\fIuser\fP/]\fIimage\fP [{--path|-p}\fIpath\fP]
-Download an image from the repository to your current working directory or \fIpath\fP, if specified.
+Download an image from the repository to the specifed path.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
 
 \fIimage\fP \- The image to download. Use \fBrepoman list-images\fP to see possible values.
 
-\fB{--path|-p} \fP\fIpath\fP \- The destination of the downloaded image.
+\fB{--path|-p} \fP\fIpath\fP \- The destination of the downloaded image. If ommitted, the image is downloaded to a file with the same name as the image
+in your current working directory.
 
 .TP
 \fB{list-images|list}\fP [--all|-a] [--long|-l] [--sharedwith|-sw] [{--user|-u} \fIuser\fP | {--group|-g} \fIgroup\fP]
 List images stored in the repository.
 
-\fB--all|-a\fP \- Display all the images on the repository.
+\fB{--all|-a}\fP \- Display all the images on the repository.
 
-\fB--long|-l\fP \- Display the full URL download path of each image.
+\fB{--long|-l}\fP \- Display the full URL download path of each image.
 
-\fB--sharedwith|-sw\fP \- Modifier flag. See below examples.
+\fB{--sharedwith|-sw}\fP \- Modifier flag. See below examples.
 
-\fB{--user|-u}\fP \fIuser\fP \- Only list images owned by \fIuser\fP
+\fB{--user|-u}\fP \fIuser\fP \- Only list images owned by \fIuser\fP.
 
-\fB{--group|-g}\fP \fIgroup\fP \- Only list images accessible by members of the group \fIgroup\fP
+\fB{--group|-g}\fP \fIgroup\fP \- Only list images accessible by members of the group \fIgroup\fP.
 
 Examples:
 
@@ -97,7 +120,7 @@ Examples:
 
 .TP
 \fBmodify-image\fP [\fIuser\fP/]\fIimage\fP --\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]
-Modify an existing image with the given information.
+Modify an image with the given information.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
 
@@ -141,12 +164,14 @@ Share an image with one or more users.
 \fIusername\fP \- The name of the users(s) to share the image with. Use \fBrepoman list-users\fP to see possible values.
 
 .TP
-\fB{snapshot|save}\fP \fIname\fP [--force|-f] [--gzip] [--resize \fISIZE\fP] [--verbose] [--clean] [--\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]]
+\fB{snapshot|save}\fP \fIuser\fP/]\fIimage\f [--force|-f] [--gzip] [--resize \fISIZE\fP] [--verbose] [--clean] [--\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]]
 Takes a snapshot of your running system's filesystem (except directories listed listed under \fIexclude_dirs\fP in repoman.conf). If \fIname\fP
-is not in your user's namespace, an image-slot entry is created with the supplied metadata information. If \fIname\fP does exist, the image-slot is updated with any
+is not in your user's domain, an image-slot entry is created with the supplied metadata information. If \fIname\fP does exist, the image-slot is updated with any
 given metadata. Finally, the snapshot is uploaded to the image-slot on the repoman repository.
 
-\fIname\fP \- The name of the newly created or existing image-slot on the repository. This will be used to reference the image when running
+\fIuser\fP \- The image's owner. This may be omitted if you own the image or are creating an image under your own users's domain.
+
+\fIimage\fP \- The name of the newly created or existing image-slot on the repository. This will be used to reference the image when running
 other repoman commands. It can only contain ([a-Z][0-9][_][-]) characters.
 
 \fB{--force|-f}\fP \- Force uploading even if it overwrites an existing image.
@@ -165,7 +190,7 @@ other repoman commands. It can only contain ([a-Z][0-9][_][-]) characters.
 \fBunshare-image-with-groups\fP [\fIuser\fP/]\fIimage\fP \fIgroup\fP [\fIgroup\fP ...]
 Unshare an image with one or more groups.
 
-\fIuser\fP \- The image's owner. This can be specified if the image you would like to unshare is in a different user's namespace.
+\fIuser\fP \- The image's owner. This may be omitted if you own the image.
 
 \fIimage\fP \- The image to unshare. Use \fBrepoman list-images\fP to see possible values.
 
@@ -175,7 +200,7 @@ Unshare an image with one or more groups.
 \fBunshare-image-with-users\fP [\fIuser\fP/]\fIimage\fP \fIusername\fP [\fIusername\fP ...]
 Unshare an image with one or more users.
 
-\fIuser\fP \- The image's owner. This can be specified if the image you would like to unshare is in a different user's namespace.
+\fIuser\fP \- The image's owner. This may be omitted if you own the image.
 
 \fIimage\fP \- The image to unshare. Use \fBrepoman list-images\fP to see possible values.
 
@@ -187,7 +212,7 @@ Upload an image file from local disc space to the repoman repository to a an exi
 
 \fIfile\fP \- The local image file to upload to the repository.
 
-\fIuser\fP \- The image's owner. This can be specified if the image-slot you would like to upload to is in a different user's namespace.
+\fIuser\fP \- The image's owner. This may be omitted if you own the image-slot.
 
 \fIimage\fP \- The repoman image-slot to upload to. Use \fBrepoman list-images\fP to see possible values.
 
@@ -198,7 +223,7 @@ for example: \fBrepoman create-image myImageName --unauthenticated_access true\f
 .TP
 \fBname\fP
 The name of the image-slot on the repository. This will be used to reference the image when running
-other repoman commands. It must be unique to your user's namespace and can only contain ([a-Z][0-9][_][-]) characters.
+other repoman commands. It must be unique to the owner's domain and can only contain ([a-Z][0-9][_][-]) characters.
 .TP
 \fBdescription\fP
 Description of the image.
@@ -253,7 +278,7 @@ List repoman users.
 \fBmodify-user\fP \fIuser\fP --\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]
 Modify a repoman user with the given metadata information.
 
-\fIuser\fP - The existing user you want to modify. See \fBrepoman list-users\fP to see possible values.
+\fIuser\fP - The user you want to modify. See \fBrepoman list-users\fP to see possible values.
 
 --\fImetadata\fP \fIvalue\fP \- See USER METADATA section for possible parameters values.
 
@@ -296,7 +321,7 @@ Add specified permissions to a group.
 
 \fIgroup\fP \- The group that you are adding permissions to. Use \fBrepoman list-groups\fP to see possible values.
 
-\fIpermission\fP -\ The permission(s) to add to the group. See GROUP PERMISSIONS for possible values.
+\fIpermission\fP -\ The permission(s) to add to the group. See GROUP PERMISSIONS section for possible values.
 
 .TP
 \fBadd-users-to-group\fP \fIgroup\fP \fIuser\fP [\fIuser\fP ...]
@@ -316,7 +341,7 @@ Create a new group based on given information.
 
 .TP
 \fBdescribe-group\fP \fIgroup\fP [--long|-l]
-Display information about an existing group.
+Display information about a group.
 
 \fIgroup\fP \- The group to describe. Use \fBrepoman list-groups\fP to see possible values.
 
@@ -324,9 +349,9 @@ Display information about an existing group.
 
 .TP
 \fBlist-groups\fP [--long|-l] [--all|-a] [{--user|-u} \fIuser\fP]
-List existing user groups on the repoman repository.
+List user groups on the repoman repository.
 
-\fB{--long|-l}\fP \- Display extra information.
+\fB{--long|-l}\fP \- Display full URL path of each group.
 
 \fB{--all|-a}\fP \-Display all groups
 
@@ -334,15 +359,15 @@ List existing user groups on the repoman repository.
 
 .TP
 \fBmodify-group\fP \fIgroup\fP --\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]
-Modify an existing group with the given information.
+Modify a group with the given information.
 
-\fIgroup\fP - The existing group you want to modify. Use \fBrepoman list-groups\fP to see possible values.
+\fIgroup\fP - The group you want to modify. Use \fBrepoman list-groups\fP to see possible values.
 
 --\fImetadata\fP \fIvalue\fP \- See GROUP METADATA section for possible parmaters and values.
 
 .TP
 \fBremove-group\fP \fIgroup\fP [--force|-f]
-Remove an existing group from the repoman repository.
+Remove a group from the repoman repository.
 
 \fIgroup\fP \- The group to delete.
 
@@ -410,14 +435,14 @@ The ability to modify images that belong to any member of your group.
 The ability to create new users.
 .TP
 \fBuser_delete\fP
-The ability to delete existing users.
+The ability to delete users.
 .TP
 \fBuser_modify\fP
 The ability to modify any\fB???\fP of a user's attributes.
 .TP
 \fBuser_modify_self\fP
 The ability to modify your own attributes.
-.SH MISC
+.SH MISCELLANEOUS SUBCOMMANDS
 .TP
 \fBabout\fP
 Display version/configuration information about this program.
