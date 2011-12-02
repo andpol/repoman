@@ -164,7 +164,7 @@ Share an image with one or more users.
 \fIusername\fP \- The name of the users(s) to share the image with. Use \fBrepoman list-users\fP to see possible values.
 
 .TP
-\fB{snapshot|save}\fP \fIuser\fP/]\fIimage\f [--force|-f] [--gzip] [--resize \fISIZE\fP] [--verbose] [--clean] [--\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]]
+\fB{snapshot|save}\fP \fIuser\fP/]\fIimage\fP [--force|-f] [--gzip] [--resize \fISIZE\fP] [--verbose] [--clean] [--\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]]
 Takes a snapshot of your running system's filesystem (except directories listed listed under \fIexclude_dirs\fP in repoman.conf). If \fIname\fP
 is not in your user's domain, an image-slot entry is created with the supplied metadata information. If \fIname\fP does exist, the image-slot is updated with any
 given metadata. Finally, the snapshot is uploaded to the image-slot on the repoman repository.
