@@ -1,20 +1,87 @@
+\# BEGIN MACRO SECTION
+\#
+\#
+\######## IMAGE METADATA ###########
+.de image_name
+\fB--name\fP \fIvalue\fP
+\- The name of the image-slot on the repository. This will be used to reference the image when running
+other repoman commands. It must be unique to the owner's domain and can only contain ([a-Z][0-9][_][-]) characters.
+..
+.de image_description
+\fB--description\fP \fIvalue\fP
+-\ Description of the image.
+..
+.de image_os_variant
+\fB--os_variant\fP \fIvalue\fP
+-\ The operating system variant. Ex: redhat, centos, ubuntu, etc.
+..
+.de image_os_arch
+\fB--os_arch\fP \fIvalue\fP
+-\ The operating system architechure. x86 or x86_64
+..
+.de image_os_type
+\fB--os_type\fP \fIvalue\fP
+-\ The operating system type. Ex: linux, unix, windows, etc.
+..
+.de image_hypervisor
+\fB--hypervisor\fP \fIvalue\fP
+-\ The hypervisor. Ex: xen, kvm, etc.
+..
+.de image_read_only
+\fB--read_only\fP {\fBtrue\fP|\fBfalse\fP}
+-\ Defaults to false. If set to true, the image cannot be modified or deleted. \fBNEED TO DISCUSS???\fP
+..
+.de image_unauthenticated_access
+\fB--unauthenticated_access\fP {\fBtrue\fP|\fBfalse\fP}
+-\ Defaults to false. If set to true, the image may be retrieved by anybody who has the correct URL.
+..
+\######## USER METADATA ###########
+.de user_user_name
+\fB--user_name\fP \fIname\fP \- The unique username of the user.
+..
+.de user_full_name
+\fB--full_name\fP \fIname\fP \- The full name of the user.
+..
+.de user_email
+\fB--email\fP \fIaddress\fP \- The email address of the user.
+..
+.de user_client_dn
+\fB--client_dn\fP \fIdn\fP \- The Distinguished Name (DN) of the the certificate which is owned by the user.
+..
+\######## GROUP METADATA #########
+.de group_name
+\fB--name\fP \fIvalue\fP
+\- The name of the group. It must be unique and can only contain ([a-Z][0-9][_][-]) characters.
+..
+.de group_permissions
+\fB--permissions\fP \fIlist\fP
+\- The permissons that the memebers of the group have (Blank seperated list Ex: \'user_delete image_modify\'). Possible values are: group_create, group_delete, group_modify, group_modify_membership, group_modify_permissions, image_create, image_delete, image_delete_group, image_modify, image_modify_group, user_create, user_delete, user_modify, user_modify_self. See GROUP PERMISSIONS section for a description of each permission.
+..
+.de group_users
+\fB--users\fP \fIlist\fP
+-\ The users that are members of the group. (Blank seperated list) Ex: \'msmith sjobs\'
+..
+\#
+\#
+\#
+\# END MACRO SECTION
 .TH REPOMAN 1 "28 November 2011"
 .SH NAME
 repoman \- a command to interact with repoman Virtual Machine (VM) image repositories
 .SH SYNOPSIS
 
-\fBrepoman\fP {--help|-h} [\fIsubcommand\fP]
+\fBrepoman\fP {help|-help|--help|-h} [\fIsubcommand\fP]
 
 \fBrepoman\fP [{--host|-H} \fIhost\fP] [{--port|-p} \fIport\fP] [{--proxy|-P} \fIpath\fP] \fIsubcommand\fP
 
-\fBrepoman\fP {--version|-v}
+\fBrepoman\fP version
 .SH DESCRIPTION
 Repoman is the name given to both a user command and a server software package that provides Virtual Machine (VM) image
 repository management over the web (HTTP/HTTPS). This man page describes the command used to interact with a repoman server,
 allowing you to create, manage, and delete Virtual Machine images.
 .SS Options
 .TP
-\fB{--help|-h}\fP [\fIsubcommand\fP]
+\fB{help|-help|--help|-h}\fP [\fIsubcommand\fP]
 Show the help dialog. If no subcommand is specified, a general overview of all the commands is displayed. Specifiying the subcommand displays
 information specific to that subcommand.
 .TP
@@ -30,13 +97,13 @@ Override the default proxy certificate with the proxy certificate located at \fI
 \fIsubcommand\fP
 See the following sections for possible subcommands and subcommand parameters.
 .TP
-\fB{--version|-v}\fP
+\fBversion\fP
 Display the repoman version and exit.
 .SH CONFIGURATION SUBCOMMAND
 Before other repoman subcommands can be used, a configuration file must be created. The following subcommand will create the
 configuration file for you.
 .TP
-\fBmake-config\fP \fIhost\fP [{--port|-p} \fIport\fP] [{--proxy|-P} \fIpath\fP] [{--exclude|-e} \fIpaths\fP] [{--emptied|-E} \fIpaths\fP]
+\fB{make-config|mc}\fP \fIhost\fP [{--port|-p} \fIport\fP] [{--proxy|-P} \fIpath\fP] [{--exclude|-e} \fIpaths\fP] [{--emptied|-E} \fIpaths\fP]
 .TP
 \fIhost\fP
 The fully qualified domain name (FQDN) of the repoman image repository server to be managed. For example: vmrepo.example.ca
@@ -57,7 +124,7 @@ A VM image is a file containing a bootable copy of a configured operating system
 by the owning user and a name unique within the owner's domain. In addition to the image itself, the repoman repository maintains
 \'metadata\', or information about the image in a an image-slot within a database, for example: name, description, architechture, etc.
 .TP
-\fBcreate-image\fP [\fIuser\fP/]\fIimage\fP [{--file|-f} \fIfile\fP] [--\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]]
+\fB{create-image|ci}\fP [\fIuser\fP/]\fIimage\fP [{--file|-f} \fIfile\fP] [--description \fIvalue\fP] [--os_variant \fIvalue\fP] [--os_arch \fIvalue\fP] [--os_type \fIvalue\fP] [--hypervisor \fIvalue\fP] [--read_only \fIvalue\fP] [--unauthenticated_access \fIvalue\fP]
 Create a new repoman image-slot based on the given information. If an image file is supplied, then \fIfile\fP is uploaded
 to the repoman respository after the entry is created.
 
@@ -68,10 +135,22 @@ other repoman commands. It must be unique within owner's domain and can only con
 
 \fB{--file|f}\fP \fIfile\fP \- The path to the image file that will be uploaded to the repository.
 
---\fImetadata\fP \fIvalue\fP \- Information about the image to be saved. See IMAGE METADATA section.
+.image_description
+
+.image_os_variant
+
+.image_os_arch
+
+.image_os_type
+
+.image_hypervisor
+
+.image_read_only
+
+.image_unauthenticated_access
 
 .TP
-\fBdescribe-image\fP [\fIuser\fP/]\fIimage\fP
+\fB{describe-image|di}\fP [\fIuser\fP/]\fIimage\fP
 Display all information about an image.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
@@ -79,7 +158,7 @@ Display all information about an image.
 \fIimage\fP \- The image to describe. Use \fBrepoman list-images\fP to see possible values.
 
 .TP
-\fB{download-image|get}\fP [\fIuser\fP/]\fIimage\fP [{--path|-p}\fIpath\fP]
+\fB{get-image|gi}\fP [\fIuser\fP/]\fIimage\fP [{--path|-p}\fIpath\fP]
 Download an image from the repository to the specifed path.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
@@ -90,7 +169,7 @@ Download an image from the repository to the specifed path.
 in your current working directory.
 
 .TP
-\fB{list-images|list}\fP [--all|-a] [--long|-l] [--sharedwith|-sw] [{--user|-u} \fIuser\fP | {--group|-g} \fIgroup\fP]
+\fB{list-images|li}\fP [--all|-a] [--long|-l] [--sharedwith|-sw] [{--user|-u} \fIuser\fP | {--group|-g} \fIgroup\fP]
 List images stored in the repository.
 
 \fB{--all|-a}\fP \- Display all the images on the repository.
@@ -119,14 +198,30 @@ Examples:
         \- has the same effect as the previous example
 
 .TP
-\fBmodify-image\fP [\fIuser\fP/]\fIimage\fP --\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]
+\fB{modify-image|mi}\fP [\fIuser\fP/]\fIimage\fP --\fImetadata\fP \fIvalue\fP [--name \fIvalue\fP] [--description \fIvalue\fP] [--os_variant \fIvalue\fP] [--os_arch \fIvalue\fP] [--os_type \fIvalue\fP] [--hypervisor \fIvalue\fP] [--read_only \fIvalue\fP] [--unauthenticated_access \fIvalue\fP]
+
 Modify an image with the given information.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
 
 \fIimage\fP \- The image to modify. Use \fBrepoman list-images\fP to see possible values. 
 
---\fImetadata\fP \fIvalue\fP \- The new metadata to apply to the image. See IMAGE METADATA section for possible metadata parameters and values.
+.image_name
+
+.image_description
+
+.image_os_variant
+
+.image_os_arch
+
+.image_os_type
+
+.image_hypervisor
+
+.image_read_only
+
+.image_unauthenticated_access
+
 
 Examples:
 
@@ -134,7 +229,7 @@ Examples:
     - renames myImage to myNewImage and updates the description 
 
 .TP
-\fB{remove-image|delete}\fP [\fIuser\fP/]\fIimage\fP [--force|-f]
+\fB{remove-image|ri}\fP [\fIuser\fP/]\fIimage\fP [--force|-f]
 Delete the specified image from the repository.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
@@ -144,7 +239,7 @@ Delete the specified image from the repository.
 \fB{--force|-f}\fP \- Delete image without confirmation.
 
 .TP
-\fBshare-image-with-groups\fP [\fIuser\fP/]\fIimage\fP \fIgroup\fP [\fIgroup\fP ...]
+\fB{share-image-with-groups|sig}\fP [\fIuser\fP/]\fIimage\fP \fIgroup\fP [\fIgroup\fP ...]
 Share an image with one or more groups.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
@@ -154,7 +249,7 @@ Share an image with one or more groups.
 \fIgroup\fP \- The name of the group(s) to share the image with. Use \fBrepoman list-groups\fP to see possible values.
 
 .TP
-\fBshare-image-with-users\fP [\fIuser\fP/]\fIimage\fP \fIusername\fP [\fIusername\fP ...]
+\fB{share-image-with-users|siu}\fP [\fIuser\fP/]\fIimage\fP \fIusername\fP [\fIusername\fP ...]
 Share an image with one or more users.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
@@ -164,7 +259,7 @@ Share an image with one or more users.
 \fIusername\fP \- The name of the users(s) to share the image with. Use \fBrepoman list-users\fP to see possible values.
 
 .TP
-\fB{snapshot|save}\fP \fIuser\fP/]\fIimage\fP [--force|-f] [--gzip] [--resize \fISIZE\fP] [--verbose] [--clean] [--\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]]
+\fB{snapshot|s}\fP \fIuser\fP/]\fIimage\fP [--force|-f] [--gzip] [--resize \fISIZE\fP] [--verbose] [--clean] [--description \fIvalue\fP] [--os_variant \fIvalue\fP] [--os_arch \fIvalue\fP] [--os_type \fIvalue\fP] [--hypervisor \fIvalue\fP] [--read_only \fIvalue\fP] [--unauthenticated_access \fIvalue\fP]
 Takes a snapshot of your running system's filesystem (except directories listed listed under \fIexclude_dirs\fP in repoman.conf). If \fIname\fP
 is not in your user's domain, an image-slot entry is created with the supplied metadata information. If \fIname\fP does exist, the image-slot is updated with any
 given metadata. Finally, the snapshot is uploaded to the image-slot on the repoman repository.
@@ -178,16 +273,29 @@ other repoman commands. It can only contain ([a-Z][0-9][_][-]) characters.
 
 \fB--gzip\fP \- Upload the image compressed with gzip.
 
-\fB--resize\fP \fISIZE\fP \- Create an image with a size of \fISIZE\fP MB.
+\fB--resize\fP \fISIZE\fP \- Create an image with a size of \fISIZE\fP MB. The size selected must be big enough to contain the entire filesystem image.
+If the size specified is not big enough, repoman will issue an error mesage and exit.
 
 \fB--verbose\fP \- Display verbose output during snapshot.
 
 \fB--clean\fP \- Remove any existing local snapshots before creating a new one.
 
---\fImetadata\fP \fIvalue\fP \- The new metadata to apply to the image. See IMAGE METADATA section for possible metadata parameters and values. (\fBNote:\fP The --name parameter should not be used)
+.image_description
+
+.image_os_variant
+
+.image_os_arch
+
+.image_os_type
+
+.image_hypervisor
+
+.image_read_only
+
+.image_unauthenticated_access
 
 .TP
-\fBunshare-image-with-groups\fP [\fIuser\fP/]\fIimage\fP \fIgroup\fP [\fIgroup\fP ...]
+\fB{unshare-image-with-groups|uig}\fP [\fIuser\fP/]\fIimage\fP \fIgroup\fP [\fIgroup\fP ...]
 Unshare an image with one or more groups.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
@@ -197,7 +305,7 @@ Unshare an image with one or more groups.
 \fIgroup\fP \- The name of the group(s) to share the image with. Use \fBrepoman describe-image\fP to see possible values.
 
 .TP
-\fBunshare-image-with-users\fP [\fIuser\fP/]\fIimage\fP \fIusername\fP [\fIusername\fP ...]
+\fB{unshare-image-with-users|uiu}\fP [\fIuser\fP/]\fIimage\fP \fIusername\fP [\fIusername\fP ...]
 Unshare an image with one or more users.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
@@ -207,7 +315,7 @@ Unshare an image with one or more users.
 \fIusername\fP \- The name of the users(s) to unshare the image with. Use \fBrepoman describe-image\fP to see possible values.
 
 .TP
-\fB{upload-image|put}\fP \fIfile\fP [\fIuser\fP/]\fIimage\fP
+\fB{put-image|pi}\fP \fIfile\fP [\fIuser\fP/]\fIimage\fP
 Upload an image file from local disc space to the repoman repository to a an existing repoman image-slot.
 
 \fIfile\fP \- The local image file to upload to the repository.
@@ -216,58 +324,29 @@ Upload an image file from local disc space to the repoman repository to a an exi
 
 \fIimage\fP \- The repoman image-slot to upload to. Use \fBrepoman list-images\fP to see possible values.
 
-.SH IMAGE METADATA
-The following information is maintained for each image and is displayed by the \fBdescribe-image\fP subcommand.
-When creating (\fBcreate-image\fP) or modifiying images (\fBmodify-image\fP), a \'--\' is prepended to the metadata field name,
-for example: \fBrepoman create-image myImageName --unauthenticated_access true\fP
-.TP
-\fBname\fP
-The name of the image-slot on the repository. This will be used to reference the image when running
-other repoman commands. It must be unique to the owner's domain and can only contain ([a-Z][0-9][_][-]) characters.
-.TP
-\fBdescription\fP
-Description of the image.
-.TP
-\fBos_variant\fP
-The operating system variant. Ex: redhat, centos, ubuntu, etc.
-.TP
-\fBos_arch\fP
-The operating system architechure. x86 or x86_64
-.TP
-\fBos_type\fP
-The operating system type. Ex: linux, unix, windows, etc.
-.TP
-\fBhypervisor\fP
-The hypervisor. Ex: xen, kvm, etc.
-.TP
-\fBread_only\fP {true|false}
-Defaults to false. If set to true, the image cannot be modified or deleted. \fBNEED TO DISCUSS???\fP
-.TP
-\fBexpires\fP
-When should the image expire? \fBNOT IMPLEMENTED\fP
-.TP
-\fBunauthenticated_access\fP {true|false}
-Defaults to false. If set to true, the image may be retrieved by anybody who has the correct URL.
-
 .SH USER MANIPULATION SUBCOMMANDS
 Each user of a repoman image repository must be registered. The repoman user ID is associated with a user's x509 credentials and is used to uniquely
 identify images within the repository.
 .TP
-\fBcreate-user\fP \fIuser\fP [--\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]]
+\fB{create-user|cu}\fP \fIuser\fP [--full_name \fIname\fP] [--email \fIaddress\fP] [--client_dn \fIdn\fP]
 Create a new repoman user based on given information.
 
 \fIuser\fP \- The name of the newly created user. Must be unique and only contain characters ([a-Z][0-9][_][-]).
 
---\fImetadata\fP \fIvalue\fP \- See USER METADATA section for possible parameters and values. (\fBNote:\fP The --name parameter should not be used)
+.user_full_name
+
+.user_email
+
+.user_client_dn
 
 .TP
-\fBdescribe-user\fP \fIuser\fP
+\fB{describe-user|du}\fP \fIuser\fP
 Display information about a repoman user.
 
 \fIuser\fP \- The user to describe. Use \fBrepoman list-users\fP to see possible values.
 
 .TP
-\fBlist-users\fP [--long|-l] [{--group|-g} \fIGROUP\fP]
+\fB{list-users|lu}\fP [--long|-l] [{--group|-g} \fIGROUP\fP]
 List repoman users.
 
 \fB{--long|-l}\fP \- Display the full URL path of each user.
@@ -275,12 +354,18 @@ List repoman users.
 \fB{--group|-g}\fP \fIGROUP\fP \- Only display users the belong to the group \fIGROUP\fP
 
 .TP
-\fBmodify-user\fP \fIuser\fP --\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]
+\fB{modify-user|mu}\fP \fIuser\fP [--user_name \fIname\fP] [--full_name \fIname\fP] [--email \fIaddress\fP] [--client_dn \fIdn\fP]
 Modify a repoman user with the given metadata information.
 
 \fIuser\fP - The user you want to modify. See \fBrepoman list-users\fP to see possible values.
 
---\fImetadata\fP \fIvalue\fP \- See USER METADATA section for possible parameters values.
+.user_user_name
+
+.user_full_name
+
+.user_email
+
+.user_client_dn
 
 Example:
 
@@ -288,43 +373,26 @@ Example:
     - renames a repoman user and updates their email address.
 
 .TP
-\fBremove-user\fP \fIuser\fP [--force|-f]
+\fB{remove-user|ru}\fP \fIuser\fP [--force|-f]
 Remove a repoman user.
 
 \fIuser\fP \- The user to delete. Use \fBrepoman list-users\fP to see possible values.
 
 \fB{--force|-f}\fP \- Delete user without confirmation.
 
-.SH USER METADATA
-The following information is maintained for each user and is displayed by the \fBdescribe-user\fP subcommand.
-When creating (\fBcreate-user\fP) or modifiying users (\fBmodify-user\fP), a \'--\' is prepended to the metadata field name,
-for example: \fBrepoman create-user johndoe --full_name \'John Doe\'\fP
-.TP
-\fBuser_name\fP
-The unique username of the user.
-.TP
-\fBfull_name\fP
-The full name of the user.
-.TP
-\fBemail\fP
-The email address of the user.
-.TP
-\fBclient_dn\fP
-The Distinguished Name (DN) of the the certificate which is owned by the user.
-
 .SH GROUP MANIPULATION SUBCOMMANDS
 Repoman facilitates the concept of user groups for the purpose of sharing images. The following section details
 subcommands to create, maintain, and destroy user groups.
 .TP
-\fBadd-permissions\fP \fIgroup\fP \fIpermission\fP [\fIpermission\fP ...]
+\fB{add-permissions|ap}\fP \fIgroup\fP \fIpermission\fP [\fIpermission\fP ...]
 Add specified permissions to a group.
 
 \fIgroup\fP \- The group that you are adding permissions to. Use \fBrepoman list-groups\fP to see possible values.
 
-\fIpermission\fP -\ The permission(s) to add to the group. See GROUP PERMISSIONS section for possible values.
+\fIpermission\fP -\ The permission(s) to add to the group. Possible values are: group_create, group_delete, group_modify, group_modify_membership, group_modify_permissions, image_create, image_delete, image_delete_group, image_modify, image_modify_group, user_create, user_delete, user_modify, user_modify_self. See GROUP PERMISSIONS section for a description of each permission.
 
 .TP
-\fBadd-users-to-group\fP \fIgroup\fP \fIuser\fP [\fIuser\fP ...]
+\fB{add-users-to-group|aug}\fP \fIgroup\fP \fIuser\fP [\fIuser\fP ...]
 Add specified users to a group.
 
 \fIgroup\fP \- The group to add the specified user(s) to.
@@ -332,41 +400,45 @@ Add specified users to a group.
 \fIuser\fP \- The user(s) to add to the group.
 
 .TP
-\fBcreate-group\fP \fIgroup\fP [--\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]]
+\fB{create-group|cg}\fP \fIgroup\fP [--permissions \fIlist\fP] [--users \fIlist\fP]
 Create a new group based on given information.
 
 \fIgroup\fP \- The name of the newly created group. It must be unique and can only contain ([a-Z][0-9][_][-]) characters.
 
---\fImetadata\fP \fIvalue\fP \- See GROUP METADATA section for possible parameters and values.
+.group_permissions
+
+.group_users
 
 .TP
-\fBdescribe-group\fP \fIgroup\fP [--long|-l]
+\fB{describe-group|dg}\fP \fIgroup\fP [--long|-l]
 Display information about a group.
 
 \fIgroup\fP \- The group to describe. Use \fBrepoman list-groups\fP to see possible values.
 
-\fB{--long|-l}\fP \- Display the full URL path for each group.
-
 .TP
-\fBlist-groups\fP [--long|-l] [--all|-a] [{--user|-u} \fIuser\fP]
-List user groups on the repoman repository.
+\fB{list-groups|lg}\fP [--long|-l] [--all|-a] [{--user|-u} \fIuser\fP]
+List user groups on the repoman repository that you belong to.
 
 \fB{--long|-l}\fP \- Display full URL path of each group.
 
-\fB{--all|-a}\fP \-Display all groups
+\fB{--all|-a}\fP \- Display all groups.
 
 \fB{--user|-u}\fP \fIuser\fP \- Display group membership for the user \fIuser\fP.
 
 .TP
-\fBmodify-group\fP \fIgroup\fP --\fImetadata\fP \fIvalue\fP [--\fImetadata\fP \fIvalue\fP ...]
+\fB{modify-group|mg}\fP \fIgroup\fP [--name \fIvalue\fP] [--permissions \fIlist\fP] [--users \fIlist\fP]
 Modify a group with the given information.
 
 \fIgroup\fP - The group you want to modify. Use \fBrepoman list-groups\fP to see possible values.
 
---\fImetadata\fP \fIvalue\fP \- See GROUP METADATA section for possible parmaters and values.
+.group_name
+
+.group_permissions
+
+.group_users
 
 .TP
-\fBremove-group\fP \fIgroup\fP [--force|-f]
+\fB{remove-group|rg}\fP \fIgroup\fP [--force|-f]
 Remove a group from the repoman repository.
 
 \fIgroup\fP \- The group to delete.
@@ -374,31 +446,30 @@ Remove a group from the repoman repository.
 \fB{--force|-f}\fP \- Delete group without confirmation.
 
 .TP
-\fBremove-permissions\fP \fIgroup\fP \fIpermission\fP [\fIpermission\fP ...]
+\fB{remove-permissions|rp}\fP \fIgroup\fP \fIpermission\fP [\fIpermission\fP ...]
 Remove specified permission(s) from a group.
 
 \fIgroup\fP \- The group that you are removing permissions from. Use \fBrepoman list-groups\fP to see possible values.
 
-\fIpermission\fP -\ The permission(s) to remove from the group. See GROUP PERMISSIONS for possible values.
+\fIpermission\fP -\ The permission(s) to remove from the group. Possible values are: group_create, group_delete, group_modify, group_modify_membership, group_modify_permissions, image_create, image_delete, image_delete_group, image_modify, image_modify_group, user_create, user_delete, user_modify, user_modify_self. See GROUP PERMISSIONS for a description of each permission.
 
 .TP
-\fBremove-users-from-group\fP \fIgroup\fP \fIuser\fP [\fIuser\fP ...]
+\fB{remove-users-from-group|rug}\fP \fIgroup\fP \fIuser\fP [\fIuser\fP ...]
 Remove specified users from a group.
 
 \fIgroup\fP \- The group to remove the specified user(s) from.
 
 \fIuser\fP \- The user(s) to remove from the group.
 
-.SH GROUP METADATA
+.SH MISCELLANEOUS SUBCOMMANDS
 .TP
-\fB--name\fP
-The name of the group. It must be unique and can only contain ([a-Z][0-9][_][-]) characters.
+\fBabout\fP
+Display version/configuration information about this program.
+
 .TP
-\fB--permissions\fP
-The permissons that the memebers of the group have. (Comma seperated list) See GROUP PERMISSIONS section for values. Ex: \'user_delete, image_modify\'
-.TP
-\fB--users\fP
-The users that are members of the group. (Comma seperated list) Ex: \'msmith, sjobs\'
+\fBwhoami\fP
+Display information about the current user (ie, you)
+
 .SH GROUP PERMISSIONS  \fBNOTE: Andre C to verify\fP
 .TP
 \fBgroup_create\fP
@@ -419,7 +490,7 @@ The ability to modify a group's permissions list.
 \fBimage_create\fP
 The ability to create images.
 .TP
-\fBImage delete.\fP
+\fBimage delete.\fP
 The ability to delete images owned by you.
 .TP
 \fBimage_delete_group\fP
@@ -442,14 +513,6 @@ The ability to modify any\fB???\fP of a user's attributes.
 .TP
 \fBuser_modify_self\fP
 The ability to modify your own attributes.
-.SH MISCELLANEOUS SUBCOMMANDS
-.TP
-\fBabout\fP
-Display version/configuration information about this program.
-
-.TP
-\fBwhoami\fP
-Display information about the current user (ie, you)
 .SH AUTHOR
 Authors to go here.
 .SH BUGS
