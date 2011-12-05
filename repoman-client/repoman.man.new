@@ -74,7 +74,6 @@ repoman \- a command to interact with repoman Virtual Machine (VM) image reposit
 
 \fBrepoman\fP [{--host|-H} \fIhost\fP] [{--port|-p} \fIport\fP] [{--proxy|-P} \fIpath\fP] \fIsubcommand\fP
 
-\fBrepoman\fP version
 .SH DESCRIPTION
 Repoman is the name given to both a user command and a server software package that provides Virtual Machine (VM) image
 repository management over the web (HTTP/HTTPS). This man page describes the command used to interact with a repoman server,
@@ -96,9 +95,6 @@ Override the default proxy certificate with the proxy certificate located at \fI
 .TP
 \fIsubcommand\fP
 See the following sections for possible subcommands and subcommand parameters.
-.TP
-\fBversion\fP
-Display the repoman version and exit.
 .SH CONFIGURATION SUBCOMMAND
 Before other repoman subcommands can be used, a configuration file must be created. The following subcommand will create the
 configuration file for you.
