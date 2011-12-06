@@ -166,12 +166,34 @@ Download an image from the repository to the specifed path.
 into your current working directory.
 
 .TP
-\fB{list-images|li}\fP [--all|-a] [--long|-l] [--sharedwith|-sw] [{--user|-u} \fIuser\fP | {--group|-g} \fIgroup\fP]
+\fB{list-images|li}\fP [--all|-a] [--long|-l] [--url|-???] [--sharedwith|-sw] [{--user|-u} \fIuser\fP | {--group|-g} \fIgroup\fP]
 List images stored in the repository.
 
 \fB{--all|-a}\fP \- Display the names of all the images on the repository.
 
-\fB{--long|-l}\fP \- Display the full URL download path of each image.
+\fB{--long|-l}\fP \- Display a table with extra information.
+.TS
+tab(~);
+c s s s s
+l l l l l.
+Example:
+<name>~<owner>~<size>~<last modified>~<description>
+myImage~jdoe~4.2GB~Dec 6, 16:04:54 2011~My new image
+.TE
+
+\fB{--url|-???}\fP \- In addition to the name, display the HTTP and HTTPS URLs of each image.
+
+.TS
+tab(~);
+cs
+l
+ll.
+Example:
+myImage
+~http://vmrepo.example.ca/api/images/raw/jdoe/myImage
+~https://vmrepo.example.ca:443/api/images/raw/jdoe/myImage
+.TE
+
 
 \fB{--sharedwith|-sw}\fP \- Modifier flag. See below examples.
 
@@ -342,7 +364,15 @@ Display information about a repoman user.
 \fB{list-users|lu}\fP [--long|-l] [{--group|-g} \fIgroup\fP]
 List repoman users.
 
-\fB{--long|-l}\fP \- Display the full URL path of each user.
+\fB{--long|-l}\fP \- Display a table with extra information.
+.TS
+tab(~);
+c s s s s
+l l l l l.
+Example:
+<username>~<full name>~<client_dn>
+jdoe~John Doe~/C=CA/O=Grid/OU=dept.org.ca/CN=John Doe
+.TE
 
 \fB{--group|-g}\fP \fIgroup\fP \- Only display users the belong to the group \fIgroup\fP
 
@@ -412,7 +442,15 @@ Display information about a group.
 \fB{list-groups|lg}\fP [--long|-l] [--all|-a] [{--user|-u} \fIuser\fP]
 List user groups on the repoman repository that you belong to.
 
-\fB{--long|-l}\fP \- Display full URL path of each group.
+\fB{--long|-l}\fP \- Display extra information in a table.
+.TS
+tab(~);
+c s s s s
+l l l l l.
+Example:
+<group name>~<members>
+mygroup~jdoe,hsimpson,pgriffin
+.TE
 
 \fB{--all|-a}\fP \- Display all groups.
 
