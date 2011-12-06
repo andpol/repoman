@@ -113,9 +113,11 @@ The location of your proxy credential to be used when communicating with the rep
 .TP
 {--exclude|-e} \fIpaths\fP
 Blank seperated list of paths to be excluded from a snapshot of the operating system during a \fBrepoman snapshot\fP. Defaults to \'/root/.ssh\'.
+\fBNote:\fP The wildcard \'*\' is supported, for example: \'/home/me/.ssh/*\'.
 .TP
 {--emptied|-E} \fIpaths\fP
 Blank seperated list of paths to be created but not copied during a snapshot of the operating system. Defaults to \'/dev /mnt /proc /sys /tmp\'.
+\fBNote:\fP The wildcards \'*\' is NOT supported.
 .SH IMAGE MANIPULATION SUBCOMMANDS
 A VM image is a file containing a bootable copy of a configured operating system. In a repoman VM repository, an image is identified
 by the owning user and a name unique within the owner's domain. In addition to the image itself, the repoman repository maintains
@@ -167,7 +169,7 @@ into your current working directory.
 \fB{list-images|li}\fP [--all|-a] [--long|-l] [--sharedwith|-sw] [{--user|-u} \fIuser\fP | {--group|-g} \fIgroup\fP]
 List images stored in the repository.
 
-\fB{--all|-a}\fP \- Display all the images on the repository.
+\fB{--all|-a}\fP \- Display the names of all the images on the repository.
 
 \fB{--long|-l}\fP \- Display the full URL download path of each image.
 
@@ -324,8 +326,7 @@ Create a new repoman user based on given information.
 
 \fIuser\fP \- The name of the newly created user. Must be unique and only contain characters ([a-Z][0-9][_][-]).
 
-\fIclient_dn\fP \- The Distinguished Name (DN) of the certificate owned by the user and is issued by a certificate authority (GridCanada).
-Example: \fB\'/C=CA/O=Grid/OU=dept.org.ca/CN=John Doe\'\fP
+\fIclient_dn\fP \- The Distinguished Name (DN, looks like: \fB\'/C=CA/O=Grid/OU=dept.org.ca/CN=John Doe\'\fP) of the certificate owned by the user and issued by a certificate authority, for example GridCanada.ca.
 
 .user_full_name
 
@@ -366,7 +367,7 @@ Example:
 
 .TP
 \fB{remove-user|ru}\fP \fIuser\fP [--force|-f]
-Remove a repoman user.
+Remove a repoman user. \fBNote:\fP All images owned by \fIuser\fP will be deleted.
 
 \fIuser\fP \- The user to delete. Use \fBrepoman list-users\fP to see possible values.
 
@@ -376,12 +377,12 @@ Remove a repoman user.
 Repoman facilitates the concept of user groups for the purpose of sharing images. The following section details
 subcommands to create, maintain, and destroy user groups.
 .TP
-\fB{add-permissions|ap}\fP \fIgroup\fP \fIpermission\fP [\fIpermission\fP ...]
+\fB{add-permissions-to-group|ap}\fP \fIgroup\fP \fIpermission\fP [\fIpermission\fP ...]
 Add specified permissions to a group.
 
 \fIgroup\fP \- The group that you are adding permissions to. Use \fBrepoman list-groups\fP to see possible values.
 
-\fIpermission\fP -\ The permission(s) to add to the group. Possible values are: group_create, group_delete, group_modify, group_modify_membership, group_modify_permissions, image_create, image_delete, image_delete_group, image_modify, image_modify_group, user_create, user_delete, user_modify, user_modify_self. See GROUP PERMISSIONS section for a description of each permission.
+\fIpermission\fP -\ The permission(s) to add to the group. Possible values are: \fBgroup_create, group_delete, group_modify, group_modify_membership, group_modify_permissions, image_create, image_delete, image_delete_group, image_modify, image_modify_group, user_create, user_delete, user_modify, user_modify_self\fP. See GROUP PERMISSIONS section for a description of each permission.
 
 .TP
 \fB{add-users-to-group|aug}\fP \fIgroup\fP \fIuser\fP [\fIuser\fP ...]
@@ -438,7 +439,7 @@ Remove a group from the repoman repository.
 \fB{--force|-f}\fP \- Delete group without confirmation.
 
 .TP
-\fB{remove-permissions|rp}\fP \fIgroup\fP \fIpermission\fP [\fIpermission\fP ...]
+\fB{remove-permissions-from-group|rpg}\fP \fIgroup\fP \fIpermission\fP [\fIpermission\fP ...]
 Remove specified permission(s) from a group.
 
 \fIgroup\fP \- The group that you are removing permissions from. Use \fBrepoman list-groups\fP to see possible values.
@@ -505,6 +506,11 @@ The ability to modify any\fB???\fP of a user's attributes.
 .TP
 \fBuser_modify_self\fP
 The ability to modify your own attributes.
+.SH FILES
+.TP
+~/.repoman/repoman.conf
+This is a per-user configuration file. It can be created and maintained manually with your favorite text editor, or
+via use of the \fBmake-config\fP subcommand.
 .SH AUTHORS
 Andre Charbonneau
 
