@@ -235,9 +235,9 @@ Modify an image with the given information.
 .image_unauthenticated_access
 
 
-Examples:
+Example:
 
-\fBrepoman modify-image myImage --name myNewImage --description \'This is an example of a rename image\'\fP
+\fBrepoman modify-image myImage --newname myNewImage --description \'This is an example of a rename image\'\fP
     - renames myImage to myNewImage and updates the description 
 
 .TP
@@ -386,7 +386,7 @@ Modify a repoman user with the given metadata information.
 
 Example:
 
-\fBrepoman modify-user jdoe --user_name johndoe --email johndoe@uvic.ca\fP
+\fBrepoman modify-user jdoe --newname johndoe --email johndoe@uvic.ca\fP
     - renames a repoman user and updates their email address.
 
 .TP
@@ -460,6 +460,11 @@ Modify a group with the given information.
 .group_permissions
 
 .group_users
+
+Example:
+
+\fBrepoman modify-group mygroup --newname mynewgroup --permissions \'user_modify_self image_create\'\fP
+    - renames a repoman group and sets some basic permissions
 
 .TP
 \fB{remove-group|rg}\fP \fIgroup\fP [--force|-f]
