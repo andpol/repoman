@@ -3,7 +3,7 @@
 \#
 \######## IMAGE METADATA ###########
 .de image_name
-\fB--name\fP \fIvalue\fP
+\fB--newname\fP \fIvalue\fP
 \- The name of the image-slot on the repository. This will be used to reference the image when running
 other repoman commands. It must be unique to the owner's domain and can only contain ([a-Z][0-9][_][-]) characters.
 ..
@@ -33,7 +33,7 @@ other repoman commands. It must be unique to the owner's domain and can only con
 ..
 \######## USER METADATA ###########
 .de user_user_name
-\fB--user_name\fP \fIname\fP \- The unique username of the user.
+\fB--newname\fP \fIname\fP \- The unique username of the user.
 ..
 .de user_full_name
 \fB--full_name\fP \fIname\fP \- The full name of the user.
@@ -46,7 +46,7 @@ other repoman commands. It must be unique to the owner's domain and can only con
 ..
 \######## GROUP METADATA #########
 .de group_name
-\fB--name\fP \fIvalue\fP
+\fB--newname\fP \fIvalue\fP
 \- The name of the group. It must be unique and can only contain ([a-Z][0-9][_][-]) characters.
 ..
 .de group_permissions
@@ -123,7 +123,7 @@ A VM image is a file containing a bootable copy of a configured operating system
 by the owning user and a name unique within the owner's domain. In addition to the image itself, the repoman repository maintains
 \'metadata\', or information about the image in a an image-slot within a database, for example: name, description, architechture, etc.
 .TP
-\fB{create-image|ci}\fP [\fIuser\fP/]\fIimage\fP [{--file|-f} \fIfile\fP] [--description \fIvalue\fP] [--os_variant \fIvalue\fP] [--os_arch \fIvalue\fP] [--os_type \fIvalue\fP] [--hypervisor \fIvalue\fP] [--unauthenticated_access \fIvalue\fP]
+\fB{create-image|ci}\fP [\fIuser\fP/]\fIimage\fP [{--file|-f} \fIfile\fP] [--description \fIvalue\fP] [--os_variant \fIvalue\fP] [--os_arch \fIvalue\fP] [--os_type \fIvalue\fP] [--hypervisor \fIvalue\fP] [--unauthenticated_access {\fBtrue\fP|\fBfalse\fP}]
 Create a new repoman image-slot based on the given information. If an image file is supplied, then \fIfile\fP is uploaded
 to the repoman respository after the entry is created.
 
@@ -132,7 +132,7 @@ to the repoman respository after the entry is created.
 \fIimage\fP \- The name of the newly created image-slot on the repository. This will be used to reference the image when running
 other repoman commands. It must be unique within owner's domain and can only contain ([a-Z][0-9][_][-]) characters.
 
-\fB{--file|f}\fP \fIfile\fP \- The path to the image file that will be uploaded to the repository.
+\fB{--file|-f}\fP \fIfile\fP \- The path to the image file that will be uploaded to the repository.
 
 .image_description
 
@@ -190,7 +190,6 @@ myImage
   https://vmrepo.example.ca:443/api/images/raw/jdoe/myImage~
 .TE
 
-
 \fB{--sharedwith|-sw}\fP \- Modifier flag. See below examples.
 
 \fB{--user|-u}\fP \fIuser\fP \- Only list images owned by \fIuser\fP.
@@ -199,21 +198,21 @@ myImage
 
 Examples:
 
-    \fBrepoman list\fP
+    \fBrepoman list-images\fP
         \- list all the current user's images
-    \fBrepoman list --sharedwith\fP
+    \fBrepoman list-images --sharedwith\fP
         \- list all the images shared with the current user
-    \fBrepoman list --user bob\fP
+    \fBrepoman list-images --user bob\fP
         \- list all images owned by the user \'bob\'
-    \fBrepoman list --sharedwith --user bob\fP
+    \fBrepoman list-images --sharedwith --user bob\fP
         \- list all the images shared with the user \'bob\'
-    \fBrepoman list --group babar\fP
+    \fBrepoman list-images --group babar\fP
         \- list all images accessible by members of the \'babar\' group
-    \fBrepoman list --sharedwith --group babar\fP
+    \fBrepoman list-images --sharedwith --group babar\fP
         \- has the same effect as the previous example
 
 .TP
-\fB{modify-image|mi}\fP [\fIuser\fP/]\fIimage\fP --\fImetadata\fP \fIvalue\fP [--name \fIvalue\fP] [--description \fIvalue\fP] [--os_variant \fIvalue\fP] [--os_arch \fIvalue\fP] [--os_type \fIvalue\fP] [--hypervisor \fIvalue\fP] [--unauthenticated_access \fIvalue\fP]
+\fB{modify-image|mi}\fP [\fIuser\fP/]\fIimage\fP [--newname \fIvalue\fP] [--description \fIvalue\fP] [--os_variant \fIvalue\fP] [--os_arch \fIvalue\fP] [--os_type \fIvalue\fP] [--hypervisor \fIvalue\fP] [--unauthenticated_access {\fBtrue\fP|\fBfalse\fP}]
 
 Modify an image with the given information.
 
@@ -252,27 +251,7 @@ Delete the specified image from the repository.
 \fB{--force|-f}\fP \- Delete image without confirmation.
 
 .TP
-\fB{share-image-with-groups|sig}\fP [\fIuser\fP/]\fIimage\fP \fIgroup\fP [\fIgroup\fP ...]
-Share an image with one or more groups.
-
-\fIuser\fP \- The image's owner. This may be omitted if you own the image.
-
-\fIimage\fP \- The image to share. Use \fBrepoman list-images\fP to see possible values.
-
-\fIgroup\fP \- The name of the group(s) to share the image with. Use \fBrepoman list-groups\fP to see possible values.
-
-.TP
-\fB{share-image-with-users|siu}\fP [\fIuser\fP/]\fIimage\fP \fIusername\fP [\fIusername\fP ...]
-Share an image with one or more users.
-
-\fIuser\fP \- The image's owner. This may be omitted if you own the image.
-
-\fIimage\fP \- The image to share. Use \fBrepoman list-images\fP to see possible values.
-
-\fIusername\fP \- The name of the users(s) to share the image with. Use \fBrepoman list-users\fP to see possible values.
-
-.TP
-\fB{save-image|si}\fP \fIuser\fP/]\fIimage\fP [--force|-f] [--gzip] [--resize \fISIZE\fP] [--verbose] [--clean] [--description \fIvalue\fP] [--os_variant \fIvalue\fP] [--os_arch \fIvalue\fP] [--os_type \fIvalue\fP] [--hypervisor \fIvalue\fP] [--unauthenticated_access \fIvalue\fP]
+\fB{save-image|si}\fP \fIuser\fP/]\fIimage\fP [--force|-f] [--gzip] [--resize \fISIZE\fP] [--verbose] [--clean] [--description \fIvalue\fP] [--os_variant \fIvalue\fP] [--os_arch \fIvalue\fP] [--os_type \fIvalue\fP] [--hypervisor \fIvalue\fP] [--unauthenticated_access {\fBtrue\fP|\fBfalse\fP}]
 Takes a snapshot of your running system's filesystem (except directories listed under \fIexclude_dirs\fP in repoman.conf). If \fIname\fP
 is not in your user's domain, an image-slot entry is created with the supplied metadata information. If \fIname\fP does exist, the image-slot is updated with any
 given metadata. Finally, the snapshot is uploaded to the image-slot on the repoman repository.
@@ -304,6 +283,26 @@ If the size specified is not big enough, repoman will issue an error mesage and 
 .image_hypervisor
 
 .image_unauthenticated_access
+
+.TP
+\fB{share-image-with-groups|sig}\fP [\fIuser\fP/]\fIimage\fP \fIgroup\fP [\fIgroup\fP ...]
+Share an image with one or more groups.
+
+\fIuser\fP \- The image's owner. This may be omitted if you own the image.
+
+\fIimage\fP \- The image to share. Use \fBrepoman list-images\fP to see possible values.
+
+\fIgroup\fP \- The name of the group(s) to share the image with. Use \fBrepoman list-groups\fP to see possible values.
+
+.TP
+\fB{share-image-with-users|siu}\fP [\fIuser\fP/]\fIimage\fP \fIusername\fP [\fIusername\fP ...]
+Share an image with one or more users.
+
+\fIuser\fP \- The image's owner. This may be omitted if you own the image.
+
+\fIimage\fP \- The image to share. Use \fBrepoman list-images\fP to see possible values.
+
+\fIusername\fP \- The name of the users(s) to share the image with. Use \fBrepoman list-users\fP to see possible values.
 
 .TP
 \fB{unshare-image-with-groups|uig}\fP [\fIuser\fP/]\fIimage\fP \fIgroup\fP [\fIgroup\fP ...]
@@ -372,7 +371,7 @@ jdoe~John Doe~/C=CA/O=Grid/OU=dept.org.ca/CN=John Doe
 \fB{--group|-g}\fP \fIgroup\fP \- Only display users the belong to the group \fIgroup\fP
 
 .TP
-\fB{modify-user|mu}\fP \fIuser\fP [--user_name \fIname\fP] [--full_name \fIname\fP] [--email \fIaddress\fP] [--client_dn \fIdn\fP]
+\fB{modify-user|mu}\fP \fIuser\fP [--newname \fIname\fP] [--full_name \fIname\fP] [--email \fIaddress\fP] [--client_dn \fIdn\fP]
 Modify a repoman user with the given metadata information.
 
 \fIuser\fP - The user you want to modify. See \fBrepoman list-users\fP to see possible values.
@@ -451,7 +450,7 @@ mygroup~jdoe,hsimpson,pgriffin
 \fB{--user|-u}\fP \fIuser\fP \- Display group membership for the user \fIuser\fP.
 
 .TP
-\fB{modify-group|mg}\fP \fIgroup\fP [--name \fIvalue\fP] [--permissions \fIlist\fP] [--users \fIlist\fP]
+\fB{modify-group|mg}\fP \fIgroup\fP [--newname \fIvalue\fP] [--permissions \fIlist\fP] [--users \fIlist\fP]
 Modify a group with the given information.
 
 \fIgroup\fP - The group you want to modify. Use \fBrepoman list-groups\fP to see possible values.
