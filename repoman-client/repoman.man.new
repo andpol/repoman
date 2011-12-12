@@ -17,7 +17,7 @@ other repoman commands. It must be unique to the owner's domain and can only con
 ..
 .de image_os_arch
 \fB--os_arch\fP \fIvalue\fP
--\ The operating system architechure. x86 or x86_64
+-\ The operating system architecture. x86 or x86_64
 ..
 .de image_os_type
 \fB--os_type\fP \fIvalue\fP
@@ -51,11 +51,11 @@ other repoman commands. It must be unique to the owner's domain and can only con
 ..
 .de group_permissions
 \fB--permissions\fP \fIlist\fP
-\- The permissons that the memebers of the group have (Blank seperated list Ex: \fB\'user_delete image_modify\'\fP). Possible values are: \fBgroup_create, group_delete, group_modify, group_modify_membership, group_modify_permissions, image_create, image_delete, image_delete_group, image_modify, image_modify_group, user_create, user_delete, user_modify, user_modify_self\fP. See GROUP PERMISSIONS section for a description of each permission.
+\- The permissions that the members of the group have (Blank separated list Ex: \fB\'user_delete image_modify\'\fP). Possible values are: \fBgroup_create, group_delete, group_modify, group_modify_membership, group_modify_permissions, image_create, image_delete, image_delete_group, image_modify, image_modify_group, user_create, user_delete, user_modify, user_modify_self\fP. See GROUP PERMISSIONS section for a description of each permission.
 ..
 .de group_users
 \fB--users\fP \fIlist\fP
--\ The users that are members of the group. (Blank seperated list) Ex: \'msmith sjobs\'
+-\ The users that are members of the group. (Blank separated list) Ex: \'msmith sjobs\'
 ..
 \#
 \#
@@ -79,7 +79,7 @@ allowing you to create, manage, and delete Virtual Machine images.
 .SS Options
 .TP
 \fB{help|--help}\fP [\fIsubcommand\fP]
-Show the help dialog. If no subcommand is specified, a general overview of all the commands is displayed. Specifiying the subcommand displays
+Show the help dialog. If no subcommand is specified, a general overview of all the commands is displayed. Specifying the subcommand displays
 information specific to that subcommand.
 .TP
 \fB{version|--version}
@@ -111,21 +111,29 @@ Used to specify the port that the repoman server listens on. Defaults to 443, th
 {--proxy|-P} \fIpatpath\fP
 The location of your proxy credential to be used when communicating with the repoman server. Defaults to /tmp/x509up_uNNNN, where NNNN is your effective UID.
 .TP
-{--exclude|-e} \fIpaths\fP
-Blank seperated list of paths to be excluded from a snapshot of the operating system during a \fBrepoman snapshot\fP. Defaults to \'/root/.ssh\'.
-\fBNote:\fP The wildcard \'*\' is supported, for example: \'/home/me/.ssh/*\'.
+{--system-excludes|-E} \fIpaths\fP
+Blank separated list of paths to be excluded from a snapshot of the
+operating system during a \fBrepoman save-image\fP. A directory path specification ending in \'/*\' will cause the directory
+to be created in the saved image, but none of it's contents to be copied to the saved image.
+Defaults to \'/cvmfs/* /dev/* /mnt/* /proc/* /root/.ssh /sys/* /tmp/*\'.
+See note under \fBuser-excludes\fP.
 .TP
-{--emptied|-E} \fIpaths\fP
-Blank seperated list of paths to be created but not copied during a snapshot of the operating system. Defaults to \'/dev /mnt /proc /sys /tmp\'.
-\fBNote:\fP The wildcards \'*\' is NOT supported.
+{--user-excludes|-e} \fIpaths\fP
+Blank separated list of paths to be excluded from a snapshot of the
+operating system during a \fBrepoman save-image\fP. A directory path specification ending in \'/*\' will cause the directory
+to be created in the saved image, but none of it's contents to be copied to the saved image.
+Defaults to an empty list.
+\fBNote:\fP The \fBsystem-excludes\fP and \fBuser-excludes\fP parameters perform precisely the same function. However, because certain specifications
+are required to create a functional image, these specifications are established by default in the \fBsystem-excludes\fP parameter. It is recommended
+that other exclusions be made by modifying the \fBuser-excludes\fP parameter only.
 .SH IMAGE MANIPULATION SUBCOMMANDS
 A VM image is a file containing a bootable copy of a configured operating system. In a repoman VM repository, an image is identified
 by the owning user and a name unique within the owner's domain. In addition to the image itself, the repoman repository maintains
-\'metadata\', or information about the image in a an image-slot within a database, for example: name, description, architechture, etc.
+\'metadata\', or information about the image in a an image-slot within a database, for example: name, description, architecture, etc.
 .TP
 \fB{create-image|ci}\fP [\fIuser\fP/]\fIimage\fP [{--file|-f} \fIfile\fP] [--description \fIvalue\fP] [--os_variant \fIvalue\fP] [--os_arch \fIvalue\fP] [--os_type \fIvalue\fP] [--hypervisor \fIvalue\fP] [--unauthenticated_access {\fBtrue\fP|\fBfalse\fP}]
 Create a new repoman image-slot based on the given information. If an image file is supplied, then \fIfile\fP is uploaded
-to the repoman respository after the entry is created.
+to the repoman repository after the entry is created.
 
 \fIuser\fP \- The image's owner. This may be omitted unless you want to create an image for a different user.
 
@@ -156,13 +164,13 @@ Display all information about an image.
 
 .TP
 \fB{get-image|gi}\fP [\fIuser\fP/]\fIimage\fP [{--path|-p}\fIpath\fP]
-Download an image from the repository to the specifed path.
+Download an image from the repository to the specified path.
 
 \fIuser\fP \- The image's owner. This may be omitted if you own the image.
 
 \fIimage\fP \- The image to download. Use \fBrepoman list-images\fP to see possible values.
 
-\fB{--path|-p} \fP\fIpath\fP \- The destination of the downloaded image. If ommitted, the image is downloaded to a file with the same name as the image
+\fB{--path|-p} \fP\fIpath\fP \- The destination of the downloaded image. If omitted, the image is downloaded to a file with the same name as the image
 into your current working directory.
 
 .TP
@@ -239,6 +247,16 @@ Example:
 
 \fBrepoman modify-image myImage --newname myNewImage --description \'This is an example of a rename image\'\fP
     - renames myImage to myNewImage and updates the description 
+
+.TP
+\fB{put-image|pi}\fP \fIfile\fP [\fIuser\fP/]\fIimage\fP
+Upload an image file from local disc space to the repoman repository to a an existing repoman image-slot.
+
+\fIfile\fP \- The local image file to upload to the repository.
+
+\fIuser\fP \- The image's owner. This may be omitted if you own the image-slot.
+
+\fIimage\fP \- The repoman image-slot to upload to. Use \fBrepoman list-images\fP to see possible values.
 
 .TP
 \fB{remove-image|ri}\fP [\fIuser\fP/]\fIimage\fP [--force|-f]
@@ -324,16 +342,6 @@ Unshare an image with one or more users.
 
 \fIusername\fP \- The name of the users(s) to unshare the image with. Use \fBrepoman describe-image\fP to see possible values.
 
-.TP
-\fB{put-image|pi}\fP \fIfile\fP [\fIuser\fP/]\fIimage\fP
-Upload an image file from local disc space to the repoman repository to a an existing repoman image-slot.
-
-\fIfile\fP \- The local image file to upload to the repository.
-
-\fIuser\fP \- The image's owner. This may be omitted if you own the image-slot.
-
-\fIimage\fP \- The repoman image-slot to upload to. Use \fBrepoman list-images\fP to see possible values.
-
 .SH USER MANIPULATION SUBCOMMANDS
 Each user of a repoman image repository must be registered. The repoman user ID is associated with a user's x509 credentials and is used to uniquely
 identify images within the repository.
@@ -401,7 +409,7 @@ Remove a repoman user. \fBNote:\fP All images owned by \fIuser\fP will be delete
 Repoman facilitates the concept of user groups for the purpose of sharing images. The following section details
 subcommands to create, maintain, and destroy user groups.
 .TP
-\fB{add-permissions-to-group|ap}\fP \fIgroup\fP \fIpermission\fP [\fIpermission\fP ...]
+\fB{add-permissions-to-group|apg}\fP \fIgroup\fP \fIpermission\fP [\fIpermission\fP ...]
 Add specified permissions to a group.
 
 \fIgroup\fP \- The group that you are adding permissions to. Use \fBrepoman list-groups\fP to see possible values.
